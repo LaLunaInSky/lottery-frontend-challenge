@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
+import ProviderContextOfSelectionLottery from "./contexts/providers/context_of_selection_lottery.provider";
 
 
 const montserrat = Montserrat({
@@ -25,7 +26,9 @@ const RootLayout = ({
           ${montserrat.className} antialiased bg-(--color_07) 
         `}
       >
-        {children}
+        <ProviderContextOfSelectionLottery>
+          { children }
+        </ProviderContextOfSelectionLottery>
       </body>
     </html>
   );
