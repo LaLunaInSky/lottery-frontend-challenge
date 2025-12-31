@@ -9,7 +9,7 @@ const TextAboutTheContent = () => {
         >
             Este sorteio foi retirado do site da 
             <Link
-                href={""}
+                href={"https://loterias.caixa.gov.br/Paginas/default.aspx"}
                 target="_blank"
                 className="
                     uppercase font-black block text-xs cursor-pointer mt-1

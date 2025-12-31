@@ -5,6 +5,11 @@ import PageBody from "../page-body/page_body";
 import PageHeaderTemplate from "./page-header-template/page_header_template";
 import PageMainTemplate from "./page-main-template/page_main_template";
 import Lotteries from "@/app/contexts/filters/enums/lotteries.enum";
+import { useQuery } from "@tanstack/react-query";
+import FetcherGetAnLottery from "@/app/contexts/fetchers/get_an_lottery.fetcher";
+import QueryGetAnLotteryByName from "@/app/contexts/queries/get_an_lottery_by_name.query";
+import LotteryNotFound from "./lottery-not-found/lottery_not_found";
+import LotteryLoading from "./lottery-loading/lottery_loading";
 
 const HomePageModel = () => {
     const {
@@ -40,20 +45,55 @@ const HomePageModel = () => {
             break;
     }
 
-    const lottery = {
-        name: NameLottery,
-        number_of_draw: 4531,
-		date_of_draw: "07-04-2020",
-    }
+    const {
+        data,
+        isLoading
+    } = useQuery({
+        queryFn: () => FetcherGetAnLottery(
+            QueryGetAnLotteryByName(
+                NameLottery
+            )
+        ),
+        queryKey: [
+            "lottery",
+            NameLottery
+        ],
+    });
 
-    return (
-        <PageBody>
-            <PageHeaderTemplate 
-                lottery={lottery}
-            />
-            <PageMainTemplate />
-        </PageBody>
-    );
+    const lottery = data?.data?.data?.lottery;
+
+    if (
+        !isLoading
+    ) {
+        if (
+            lottery
+        ) {
+            return (
+                <PageBody>
+                    <PageHeaderTemplate 
+                        lottery={{
+                            name: lottery.name,
+                            number_of_draw: lottery.number_of_draw,
+                            date_of_draw: lottery.date_of_draw
+                        }}
+                    />
+                    <PageMainTemplate 
+                        lottery={{
+                            winning_numbers_draw: lottery.winning_numbers_draw,
+                        }}
+                    />
+                </PageBody>
+            );
+        } else {
+            return (
+                <LotteryNotFound />
+            );
+        }
+    } else {
+        return (
+            <LotteryLoading />
+        );
+    }
 };
 
 export default HomePageModel;
